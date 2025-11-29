@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "../firebase/firebase.config";
-import {
+import { 
+  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
@@ -10,28 +10,31 @@ import {
   updateProfile,
   getIdToken
 } from "firebase/auth";
+import app from "../firebase/firebase.config";
 
-const AuthContext = createContext();
+// Named export
+export const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }) {
+  const auth = getAuth(app);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+
   useEffect(() => {
-    const un = onAuthStateChanged(auth, async (u) => {
+    const unsubscribe = onAuthStateChanged(auth, async (u) => {
       setUser(u);
       if (u) {
-        const id = await getIdToken(u, /* forceRefresh */ true);
+        const id = await getIdToken(u, true);
         setToken(id);
-        // optionally persist token to localStorage
         localStorage.setItem("homehero_token", id);
       } else {
         setToken(null);
         localStorage.removeItem("homehero_token");
       }
     });
-    return () => un();
-  }, []);
+    return () => unsubscribe();
+  }, [auth]);
 
   const register = (name, email, password, photoURL) =>
     createUserWithEmailAndPassword(auth, email, password)
@@ -47,3 +50,4 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
