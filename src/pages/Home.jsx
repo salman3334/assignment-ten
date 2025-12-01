@@ -1,57 +1,92 @@
-// src/pages/Home.jsx
+
 import React, { useEffect, useState } from "react";
-import HeroSlider from "../components/HeroSlider";
-import axios from "../utils/axiosConfig";
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const Home = () => {
-  const [services, setServices] = useState([]);
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+  };
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const res = await axios.get("/services?limit=6"); // top 6
-        setServices(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchServices();
-  }, []);
+  const services = [
+    {
+      id: 1,
+      name: "Electrician Service",
+      img: "https://images.unsplash.com/photo-1581092795366-d2e3c12d99b1?auto=format&fit=crop&w=800&q=60",
+    },
+    {
+      id: 2,
+      name: "Plumbing Service",
+      img: "https://images.unsplash.com/photo-1596925039111-0ffb18f21f46?auto=format&fit=crop&w=800&q=60",
+    },
+    {
+      id: 3,
+      name: "Cleaning Service",
+      img: "https://images.unsplash.com/photo-1618395056762-f7f86a02ad5f?auto=format&fit=crop&w=800&q=60",
+    },
+    {
+      id: 4,
+      name: "Carpentry Service",
+      img: "https://images.unsplash.com/photo-1581090700227-81b140fa0d38?auto=format&fit=crop&w=800&q=60",
+    },
+    {
+      id: 5,
+      name: "Gardening Service",
+      img: "https://images.unsplash.com/photo-1595288543770-6b3d3f1dc292?auto=format&fit=crop&w=800&q=60",
+    },
+    {
+      id: 6,
+      name: "Painting Service",
+      img: "https://images.unsplash.com/photo-1601160383790-2ab6f2476b40?auto=format&fit=crop&w=800&q=60",
+    },
+  ];
 
   return (
-    <div>
-      <HeroSlider />
-
-      {/* Top 6 Services */}
-      <section className="py-16 px-4 md:px-20">
-        <h2 className="text-3xl font-bold mb-8 text-center">Our Top Services</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {services.map((service) => (
-            <motion.div
-              key={service._id}
-              className="bg-white rounded shadow p-4 hover:shadow-lg transition"
-              whileHover={{ scale: 1.05 }}
-            >
-              <img
-                src={service.image}
-                alt={service.name}
-                className="w-full h-48 object-cover rounded mb-4"
-              />
-              <h3 className="text-xl font-semibold">{service.name}</h3>
-              <p className="text-gray-600 mb-2">{service.category}</p>
-              <p className="font-bold mb-4">${service.price}</p>
-              <Link
-                to={`/service/${service._id}`}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
-                Details
-              </Link>
-            </motion.div>
-          ))}
+    <div className="container mx-auto p-4">
+      {/* Slider Section */}
+      <Slider {...sliderSettings}>
+        <div>
+          <img
+            src="https://images.unsplash.com/photo-1573164574395-8535eacc9f5e?auto=format&fit=crop&w=1200&q=80"
+            alt="Slide 1"
+            className="w-full h-64 object-cover rounded"
+          />
         </div>
-      </section>
+        <div>
+          <img
+            src="https://images.unsplash.com/photo-1581090700227-81b140fa0d38?auto=format&fit=crop&w=1200&q=80"
+            alt="Slide 2"
+            className="w-full h-64 object-cover rounded"
+          />
+        </div>
+        <div>
+          <img
+            src="https://images.unsplash.com/photo-1596925039111-0ffb18f21f46?auto=format&fit=crop&w=1200&q=80"
+            alt="Slide 3"
+            className="w-full h-64 object-cover rounded"
+          />
+        </div>
+      </Slider>
+
+      {/* Services Section */}
+      <h2 className="text-2xl font-bold my-6 text-center">Our Services</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {services.map((service) => (
+          <div key={service.id} className="bg-white shadow rounded overflow-hidden">
+            <img src={service.img} alt={service.name} className="w-full h-48 object-cover"/>
+            <div className="p-4">
+              <h3 className="text-lg font-semibold">{service.name}</h3>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
