@@ -1,14 +1,25 @@
 import axios from "axios";
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-
-const instance = axios.create({ baseURL: `${baseURL}/api` });
-
-// attach token automatically
-instance.interceptors.request.use((config) => {
-  const t = localStorage.getItem("homehero_token");
-  if (t) config.headers.Authorization = `Bearer ${t}`;
-  return config;
+// Base URL from environment variable
+const API = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-export default instance;
+// Optional: Add token from localStorage automatically
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("homehero_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export default API;
